@@ -3,12 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aiutami a riparare l’iPhone 📱</title>
-  <meta name="description" content="Pagina donazioni con PayPal, Revolut e Amazon. Barra obiettivo, feed donatori e ticker." />
+  <title>Aiutami a sistemare l’iPhone 📱</title>
+  <meta name="description" content="Donazioni via PayPal o Revolut. Feed donatori automatico da Google Sheet (CSV) e promo: 2 mesi gratis per donazioni ≥ 10€." />
   <style>
-    :root{
-      --bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa;
-    }
+    :root{--bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa}
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 700px at 80% -10%,#1b1230 0%,#0b0b10 60%),var(--bg);color:var(--txt)}
     a{color:inherit;text-decoration:none}
@@ -41,6 +39,8 @@
     footer{margin:26px 0;color:var(--muted);font-size:13px;text-align:center}
     .contact{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
     .contact a{font-weight:800;text-decoration:underline}
+    .promo{margin-top:12px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(122,191,255,.12),rgba(255,255,255,0));font-weight:700}
+    .promo small{display:block;color:var(--muted);font-weight:500;margin-top:4px}
   </style>
 </head>
 <body>
@@ -56,7 +56,6 @@
     </header>
 
     <div class="grid">
-      <!-- LEFT: Goal + Buttons + Feed -->
       <section class="card">
         <div class="goal"><strong id="raisedLabel">€0</strong><span class="muted" id="targetLabel">obiettivo €600</span></div>
         <div class="bar"><div class="fill" id="fill" style="width:0%"></div></div>
@@ -69,7 +68,12 @@
         <div class="btns">
           <a class="btn" id="paypalBtn" href="https://paypal.me/iliyanadg" target="_blank" rel="noopener noreferrer">💸 Dona con PayPal</a>
           <a class="btn" id="revolutBtn" href="https://revolut.me/iliyan3gd8" target="_blank" rel="noopener noreferrer">⚡️ Paga con Revolut</a>
-          <a class="btn" id="amazonBtn" href="https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share" target="_blank" rel="noopener noreferrer">🎁 Regala via Amazon</a>
+          <a class="btn" id="formBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSflaXPMs1gmBiewNUqfiSqwRyUy3OOWNRIKeTjuAof8Wtx6Yw/viewform?usp=header" target="_blank" rel="noopener noreferrer">📝 Dopo la donazione: lascia il tuo nome</a>
+        </div>
+
+        <div class="promo">
+          🤍💙 <b>PROMO LANCIO:</b> chi dona <b>≥ 10€</b> riceverà <b>2 mesi gratuiti</b> quando lancio.
+          <small>Per riscattare: lascia IG nel form oppure scrivimi su <a href="https://instagram.com/iliyanadg" target="_blank" rel="noopener noreferrer">@iliyanadg</a>.</small>
         </div>
 
         <div class="contact">
@@ -79,75 +83,6 @@
 
         <div class="ticker"><span class="marquee" id="ticker">Grazie a tutt* per il supporto 💖</span></div>
 
-        <h3 style="margin:12px 0 6px">Ultimi sostenitori</h3>
-        <div class="feed" id="feed"></div>
-      </section>
+        <h3 style="margin:12px 0
 
-      <!-- RIGHT: Note -->
-      <aside class="card">
-        <h3 style="margin:6px 0 8px">Come funziona</h3>
-        <p class="muted">Scegli PayPal, Revolut o Amazon. Dopo la donazione, il tuo nome (o “Anonimo”) appare nel feed. Aggiorno la lista ogni giorno per garantire trasparenza. 💕</p>
-        <ul class="muted">
-          <li>PayPal: <code>paypal.me/iliyanadg</code></li>
-          <li>Revolut: <code>revolut.me/iliyan3gd8</code></li>
-          <li>Amazon: <code>amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share</code></li>
-        </ul>
-        <p class="muted">Se desideri restare anonimo, scrivimi "anonimo" nella nota della donazione.</p>
-        <div class="pill" style="display:inline-block;margin-top:8px">Contatto diretto IG: <b>@iliyanadg</b></div>
-      </aside>
-    </div>
-
-    <footer>© Iliyana — grazie per ogni aiuto! 🌸</footer>
-  </div>
-
-  <script>
-    // === CONFIGURAZIONE PERSONALIZZABILE ===
-    const CONFIG = {
-      target: 600, // Obiettivo totale in EUR (cambia qui)
-      paypal: 'https://paypal.me/iliyanadg',
-      revolut: 'https://revolut.me/iliyan3gd8',
-      amazon: 'https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share',
-      supporters: [
-        // Aggiorna qui le donazioni
-        { name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' },
-        { name: 'Marco R.', amount: 15, note: 'Un abbraccio', time: '2025-09-20T22:45:00Z' },
-        { name: 'Sharon ✨', amount: 30, note: 'Go girl!', time: '2025-09-21T07:30:00Z' }
-      ]
-    };
-
-    // === LOGICA UI ===
-    const € = n => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n);
-    const byTime = (a,b)=> new Date(b.time)-new Date(a.time);
-
-    const sum = CONFIG.supporters.reduce((t,s)=>t+Number(s.amount||0),0);
-    const pct = Math.min(100, Math.round((sum/CONFIG.target)*100));
-
-    document.getElementById('raisedLabel').textContent = €(sum);
-    document.getElementById('targetLabel').textContent = 'obiettivo ' + €(CONFIG.target);
-    document.getElementById('fill').style.width = pct + '%';
-    document.getElementById('count').textContent = CONFIG.supporters.length;
-    document.getElementById('left').textContent = €(Math.max(0, CONFIG.target - sum));
-
-    // Ultima donazione
-    const last = CONFIG.supporters.slice().sort(byTime)[0];
-    document.getElementById('last').textContent = last ? new Date(last.time).toLocaleString('it-IT') : '—';
-
-    // Feed donatori
-    const feedEl = document.getElementById('feed');
-    CONFIG.supporters.sort(byTime).forEach(s=>{
-      const row = document.createElement('div');
-      row.className = 'donor';
-      row.innerHTML = `<div>👤 <b>${s.name||'Anonimo'}</b><div class="time">${new Date(s.time).toLocaleString('it-IT')}</div></div>
-                       <div class="muted">${s.note? s.note : ''}</div>
-                       <div class="amt">+ ${€(s.amount||0)}</div>`;
-      feedEl.appendChild(row);
-    });
-
-    // Ticker scorrevole
-    const ticker = document.getElementById('ticker');
-    const phrases = CONFIG.supporters.map(s=> `${s.name||'Anonimo'} +${€(s.amount)} `);
-    ticker.textContent = (phrases.join(' • ') + ' • ').repeat(2);
-  </script>
-</body>
-</html>
 
