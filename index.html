@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aiutami a riparare l’iPhone 📱</title>
+  <meta name="description" content="Pagina donazioni con PayPal, Revolut e Amazon. Barra obiettivo, feed donatori (manuale) e ticker." />
+  <style>
+    :root{
+      --bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa;--warn:#ffd166;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 700px at 80% -10%,#1b1230 0%,#0b0b10 60%),var(--bg);color:var(--txt)}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:980px;margin:0 auto;padding:28px}
+    header{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin:12px 0 24px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--acc),#ffa6ed);display:grid;place-items:center;color:#170b1a;font-weight:900;box-shadow:0 10px 20px rgba(255,79,216,.25)}
+    h1{font-size:clamp(20px,3vw,30px);margin:0}
+    .sub{color:var(--muted);font-size:14px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .grid{display:grid;gap:16px}
+    @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
+    .goal{display:flex;align-items:end;justify-content:space-between;margin:2px 0 12px}
+    .goal strong{font-size:28px}
+    .muted{color:var(--muted)}
+    .bar{height:16px;border-radius:999px;background:var(--soft);position:relative;overflow:hidden}
+    .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--acc) 0%, var(--acc2) 100%);box-shadow:0 4px 20px rgba(122,191,255,.35)}
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+    .pill{background:var(--soft);border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:999px;font-size:14px}
+    .btns{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.00));font-weight:700}
+    .btn:hover{transform:translateY(-1px);transition:transform .15s ease}
+    .btn.paypal{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
+    .btn.revolut{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
+    .btn.amazon{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
+    .feed{max-height:420px;overflow:auto;padding-right:8px}
+    .donor{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;margin:6px 0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
+    .amt{margin-left:auto;font-weight:800;color:var(--ok)}
+    .time{font-size:12px;color:var(--muted)}
+    .ticker{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,rgba(255,255,255,.02),rgba(255,255,255,.00));padding:10px;margin:10px 0}
+    .marquee{display:inline-block;animation:scroll 22s linear infinite}
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    footer{margin:26px 0;color:var(--muted);font-size:13px;text-align:center}
+    .qr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .qr img{width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">💖</div>
+        <div>
+          <h1>Aiutami a sistemare l’iPhone</h1>
+          <div class="sub">Piccole donazioni = grande differenza. Trasparenza totale qui sotto ✨</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Goal + Buttons + Feed -->
+      <section class="card">
+        <div class="goal"><strong id="raisedLabel">€0</strong><span class="muted" id="targetLabel">obiettivo €600</span></div>
+        <div class="bar"><div class="fill" id="fill" style="width:0%"></div></div>
+        <div class="stats">
+          <div class="pill">Donatori: <b id="count">0</b></div>
+          <div class="pill">Mancano: <b id="left">€0</b></div>
+          <div class="pill">Ultima donazione: <b id="last">—</b></div>
+        </div>
+
+        <div class="btns">
+          <a class="btn paypal" id="paypalBtn" href="#" target="_blank" rel="noopener">💸 Dona con PayPal</a>
+          <a class="btn revolut" id="revolutBtn" href="#" target="_blank" rel="noopener">⚡️ Paga con Revolut</a>
+          <a class="btn amazon" id="amazonBtn" href="#" target="_blank" rel="noopener">🎁 Regala via Amazon</a>
+        </div>
+
+        <div class="qr">
+          <img id="qr1" alt="QR PayPal" />
+          <img id="qr2" alt="QR Revolut" />
+        </div>
+
+        <div class="ticker"><span class="marquee" id="ticker">Grazie a tutt* per il supporto 💖</span></div>
+
+        <h3 style="margin:12px 0 6px">Ultimi sostenitori</h3>
+        <div class="feed" id="feed"></div>
+      </section>
+
+      <!-- RIGHT: Note -->
+      <aside class="card">
+        <h3 style="margin:6px 0 8px">Come funziona</h3>
+        <p class="muted">Scegli PayPal, Revolut o Amazon. Dopo la donazione, il tuo nome (o “Anonimo”) appare nel feed. Aggiorno la lista ogni giorno per garantire trasparenza. 💕</p>
+        <ul class="muted">
+          <li>PayPal: link <code>paypal.me/iliyanadg</code></li>
+          <li>Revolut: link <code>revolut.me/iliyan3gd8</code></li>
+          <li>Amazon: wishlist <code>https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share</code></li>
+        </ul>
+        <p class="muted">Se desideri restare anonimo, scrivimi "anonimo" nella nota della donazione.</p>
+        <div class="pill" style="display:inline-block;margin-top:8px">Contatto diretto: <b>@iliyanadg</b></div>
+      </aside>
+    </div>
+
+    <footer>© Iliyana — grazie per ogni aiuto! 🌸</footer>
+  </div>
+
+  <script>
+    // === CONFIGURAZIONE PERSONALIZZABILE ===
+    const CONFIG = {
+      target: 600,                 // Obiettivo totale in EUR
+      paypal: 'https://paypal.me/iliyanadg',
+      revolut: 'https://revolut.me/iliyan3gd8',
+      amazon: 'https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share',
+      supporters: [
+        // ESEMPIO: Modifica/aggiungi le donazioni qui
+        { name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' },
+        { name: 'Marco R.', amount: 15, note: 'Un abbraccio', time: '2025-09-20T22:45:00Z' },
+        { name: 'Sharon ✨', amount: 30, note: 'Go girl!', time: '2025-09-21T07:30:00Z' },
+      ]
+    };
+
+    // === LOGICA UI ===
+    const € = n => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n);
+    const byTime = (a,b)=> new Date(b.time)-new Date(a.time);
+
+    const sum = CONFIG.supporters.reduce((t,s)=>t+Number(s.amount||0),0);
+    const pct = Math.min(100, Math.round((sum/CONFIG.target)*100));
+
+    document.getElementById('raisedLabel').textContent = €(sum);
+    document.getElementById('targetLabel').textContent = 'obiettivo ' + €(CONFIG.target);
+    document.getElementById('fill').style.width = pct + '%';
+    document.getElementById('count').textContent = CONFIG.supporters.length;
+    document.getElementById('left').textContent = €(Math.max(0, CONFIG.target - sum));
+    document.getElementById('paypalBtn').href = CONFIG.paypal;
+    document.getElementById('revolutBtn').href = CONFIG.revolut;
+    document.getElementById('amazonBtn').href = CONFIG.amazon;
+
+    // Ultima donazione
+    const last = CONFIG.supporters.slice().sort(byTime)[0];
+    document.getElementById('last').textContent = last ? new Date(last.time).toLocaleString('it-IT') : '—';
+
+    // QR (Google Chart API)
+    const qr = (txt)=> 'https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl='+encodeURIComponent(txt);
+    document.getElementById('qr1').src = qr(CONFIG.paypal);
+    document.getElementById('qr2').src = qr(CONFIG.revolut);
+
+    // Feed donatori
+    const feedEl = document.getElementById('feed');
+    CONFIG.supporters.sort(byTime).forEach(s=>{
+      const row = document.createElement('div');
+      row.className = 'donor';
+      row.innerHTML = `<div>👤 <b>${s.name||'Anonimo'}</b><div class="time">${new Date(s.time).toLocaleString('it-IT')}</div></div>
+                       <div class="muted">${s.note? s.note : ''}</div>
+                       <div class="amt">+ ${€(s.amount||0)}</div>`;
+      feedEl.appendChild(row);
+    });
+
+    // Ticker scorrevole
+    const ticker = document.getElementById('ticker');
+    const phrases = CONFIG.supporters.map(s=> `${s.name||'Anonimo'} +${€(s.amount)} `);
+    ticker.textContent = (phrases.join(' • ') + ' • ').repeat(2);
+  </script>
+</body>
+</html>
