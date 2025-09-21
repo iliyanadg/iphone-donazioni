@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aiutami a riparare l’iPhone 📱</title>
-  <meta name="description" content="Pagina donazioni con PayPal, Revolut e Amazon. Barra obiettivo, feed donatori (manuale) e ticker." />
+  <meta name="description" content="Pagina donazioni con PayPal, Revolut e Amazon. Barra obiettivo, feed donatori e ticker." />
   <style>
     :root{
-      --bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa;--warn:#ffd166;
+      --bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 700px at 80% -10%,#1b1230 0%,#0b0b10 60%),var(--bg);color:var(--txt)}
@@ -29,11 +29,8 @@
     .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
     .pill{background:var(--soft);border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:999px;font-size:14px}
     .btns{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
-    .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.00));font-weight:700}
+    .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.00));font-weight:700;cursor:pointer}
     .btn:hover{transform:translateY(-1px);transition:transform .15s ease}
-    .btn.paypal{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
-    .btn.revolut{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
-    .btn.amazon{background:linear-gradient(180deg,rgba(0,0,0,.0),rgba(255,255,255,.02));}
     .feed{max-height:420px;overflow:auto;padding-right:8px}
     .donor{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;margin:6px 0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
     .amt{margin-left:auto;font-weight:800;color:var(--ok)}
@@ -42,8 +39,8 @@
     .marquee{display:inline-block;animation:scroll 22s linear infinite}
     @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     footer{margin:26px 0;color:var(--muted);font-size:13px;text-align:center}
-    .qr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-    .qr img{width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08)}
+    .contact{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
+    .contact a{font-weight:800;text-decoration:underline}
   </style>
 </head>
 <body>
@@ -70,14 +67,14 @@
         </div>
 
         <div class="btns">
-          <a class="btn paypal" id="paypalBtn" href="#" target="_blank" rel="noopener">💸 Dona con PayPal</a>
-          <a class="btn revolut" id="revolutBtn" href="#" target="_blank" rel="noopener">⚡️ Paga con Revolut</a>
-          <a class="btn amazon" id="amazonBtn" href="#" target="_blank" rel="noopener">🎁 Regala via Amazon</a>
+          <a class="btn" id="paypalBtn" href="https://paypal.me/iliyanadg" target="_blank" rel="noopener noreferrer">💸 Dona con PayPal</a>
+          <a class="btn" id="revolutBtn" href="https://revolut.me/iliyan3gd8" target="_blank" rel="noopener noreferrer">⚡️ Paga con Revolut</a>
+          <a class="btn" id="amazonBtn" href="https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share" target="_blank" rel="noopener noreferrer">🎁 Regala via Amazon</a>
         </div>
 
-        <div class="qr">
-          <img id="qr1" alt="QR PayPal" />
-          <img id="qr2" alt="QR Revolut" />
+        <div class="contact">
+          📩 <span class="muted">Contatto diretto:</span> Instagram
+          <a href="https://instagram.com/iliyanadg" target="_blank" rel="noopener noreferrer">@iliyanadg</a>
         </div>
 
         <div class="ticker"><span class="marquee" id="ticker">Grazie a tutt* per il supporto 💖</span></div>
@@ -91,12 +88,12 @@
         <h3 style="margin:6px 0 8px">Come funziona</h3>
         <p class="muted">Scegli PayPal, Revolut o Amazon. Dopo la donazione, il tuo nome (o “Anonimo”) appare nel feed. Aggiorno la lista ogni giorno per garantire trasparenza. 💕</p>
         <ul class="muted">
-          <li>PayPal: link <code>paypal.me/iliyanadg</code></li>
-          <li>Revolut: link <code>revolut.me/iliyan3gd8</code></li>
-          <li>Amazon: wishlist <code>https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share</code></li>
+          <li>PayPal: <code>paypal.me/iliyanadg</code></li>
+          <li>Revolut: <code>revolut.me/iliyan3gd8</code></li>
+          <li>Amazon: <code>amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share</code></li>
         </ul>
         <p class="muted">Se desideri restare anonimo, scrivimi "anonimo" nella nota della donazione.</p>
-        <div class="pill" style="display:inline-block;margin-top:8px">Contatto diretto: <b>@iliyanadg</b></div>
+        <div class="pill" style="display:inline-block;margin-top:8px">Contatto diretto IG: <b>@iliyanadg</b></div>
       </aside>
     </div>
 
@@ -106,15 +103,15 @@
   <script>
     // === CONFIGURAZIONE PERSONALIZZABILE ===
     const CONFIG = {
-      target: 600,                 // Obiettivo totale in EUR
+      target: 600, // Obiettivo totale in EUR (cambia qui)
       paypal: 'https://paypal.me/iliyanadg',
       revolut: 'https://revolut.me/iliyan3gd8',
       amazon: 'https://www.amazon.it/hz/wishlist/ls/3KXMSOW9R9JY?ref_=wl_share',
       supporters: [
-        // ESEMPIO: Modifica/aggiungi le donazioni qui
+        // Aggiorna qui le donazioni
         { name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' },
         { name: 'Marco R.', amount: 15, note: 'Un abbraccio', time: '2025-09-20T22:45:00Z' },
-        { name: 'Sharon ✨', amount: 30, note: 'Go girl!', time: '2025-09-21T07:30:00Z' },
+        { name: 'Sharon ✨', amount: 30, note: 'Go girl!', time: '2025-09-21T07:30:00Z' }
       ]
     };
 
@@ -130,18 +127,10 @@
     document.getElementById('fill').style.width = pct + '%';
     document.getElementById('count').textContent = CONFIG.supporters.length;
     document.getElementById('left').textContent = €(Math.max(0, CONFIG.target - sum));
-    document.getElementById('paypalBtn').href = CONFIG.paypal;
-    document.getElementById('revolutBtn').href = CONFIG.revolut;
-    document.getElementById('amazonBtn').href = CONFIG.amazon;
 
     // Ultima donazione
     const last = CONFIG.supporters.slice().sort(byTime)[0];
     document.getElementById('last').textContent = last ? new Date(last.time).toLocaleString('it-IT') : '—';
-
-    // QR (Google Chart API)
-    const qr = (txt)=> 'https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl='+encodeURIComponent(txt);
-    document.getElementById('qr1').src = qr(CONFIG.paypal);
-    document.getElementById('qr2').src = qr(CONFIG.revolut);
 
     // Feed donatori
     const feedEl = document.getElementById('feed');
@@ -161,3 +150,4 @@
   </script>
 </body>
 </html>
+
