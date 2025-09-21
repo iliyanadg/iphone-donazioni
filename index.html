@@ -68,7 +68,6 @@
         <div class="btns">
           <a class="btn" id="paypalBtn" href="https://paypal.me/iliyanadg" target="_blank" rel="noopener noreferrer">💸 Dona con PayPal</a>
           <a class="btn" id="revolutBtn" href="https://revolut.me/iliyan3gd8" target="_blank" rel="noopener noreferrer">⚡️ Paga con Revolut</a>
-          <!-- NOTA: questo è un link di MODIFICA del Form. Appena puoi, sostituiscilo con "Invia → link" (pubblico). -->
           <a class="btn" id="formBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSflaXPMs1gmBiewNUqfiSqwRyUy3OOWNRIKeTjuAof8Wtx6Yw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">📝 Dopo la donazione: lascia il tuo nome</a>
         </div>
 
@@ -106,18 +105,17 @@
   <script>
     // ====== CONFIG ======
     const CONFIG = {
-      target: 600,
+      target: 600, // cambia qui il goal se vuoi
       paypal: 'https://paypal.me/iliyanadg',
       revolut: 'https://revolut.me/iliyan3gd8',
-      supporters: [
-        { name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' }
-      ]
+      // fallback (se il CSV non è raggiungibile)
+      supporters: [{ name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' }]
     };
 
     // CSV pubblico (pubblica sul web → Link → "Risposte del modulo 1" → CSV)
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3S4ETrSZv34R7AqhHaRzQDbfHOLq5ZRiA5hg-EriSQs1uEIHVDw_zdMjkfdS3wSnvbrN0r009VNrf/pub?gid=470744628&single=true&output=csv';
+    const CSV_URL_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3S4ETrSZv34R7AqhHaRzQDbfHOLq5ZRiA5hg-EriSQs1uEIHVDw_zdMjkfdS3wSnvbrN0r009VNrf/pub?gid=470744628&single=true&output=csv';
 
-    // === mappa colonne del tuo foglio: A Timestamp | B Nome | C Importo
+    // Colonne del tuo foglio: A Timestamp | B Nome | C Importo
     const COLS = { name: 1, amount: 2, timestamp: 0 };
 
     // ====== UTIL ======
@@ -126,7 +124,7 @@
 
     function sanitizeAmount(v){
       if (v == null) return 0;
-      v = String(v).replace(/[€\s]/g,'');          // togli € e spazi
+      v = String(v).replace(/[€\s]/g,'');              // togli € e spazi
       if (v.includes(',') && !v.includes('.')) v = v.replace(',', '.'); // 10,50 -> 10.50
       const n = Number(v);
       return Number.isFinite(n) && n > 0 ? Math.round(n*100)/100 : 0;
@@ -138,18 +136,19 @@
       const rows = lines.slice(1).map(l =>
         l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g,''))
       );
-
       return rows.map(r => ({
         name: r[COLS.name] || 'Anonimo',
         amount: sanitizeAmount(r[COLS.amount]),
-        note: '', // non hai la colonna messaggio
+        note: '', // non usi (per ora) il campo messaggio
         time: r[COLS.timestamp] ? new Date(r[COLS.timestamp]).toISOString() : new Date().toISOString()
       })).filter(x => x.amount > 0);
     }
 
+    // Carica CSV con anti-cache per aggiornarsi subito
     async function loadDonors(){
       try{
-        const res = await fetch(CSV_URL, { cache:'no-store' });
+        const url = CSV_URL_BASE + '&_ts=' + Date.now();
+        const res = await fetch(url, { cache:'no-store' });
         if(!res.ok) throw new Error('CSV non accessibile');
         const txt = await res.text();
         const fromSheet = parseCSV(txt);
@@ -161,6 +160,7 @@
     }
 
     (async function init(){
+      // fissa/propaga i link ai bottoni
       document.getElementById('paypalBtn').href = CONFIG.paypal;
       document.getElementById('revolutBtn').href = CONFIG.revolut;
 
@@ -185,7 +185,7 @@
         row.innerHTML = `<div>👤 <b>${s.name||'Anonimo'}</b>
                            <div class="time">${new Date(s.time).toLocaleString('it-IT')}</div>
                          </div>
-                         <div class="muted">${''}</div>
+                         <div class="muted"></div>
                          <div class="amt">+ ${€(s.amount||0)}</div>`;
         feedEl.appendChild(row);
       });
@@ -197,6 +197,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
