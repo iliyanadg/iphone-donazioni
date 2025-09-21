@@ -68,7 +68,8 @@
         <div class="btns">
           <a class="btn" id="paypalBtn" href="https://paypal.me/iliyanadg" target="_blank" rel="noopener noreferrer">💸 Dona con PayPal</a>
           <a class="btn" id="revolutBtn" href="https://revolut.me/iliyan3gd8" target="_blank" rel="noopener noreferrer">⚡️ Paga con Revolut</a>
-          <a class="btn" id="formBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSflaXPMs1gmBiewNUqfiSqwRyUy3OOWNRIKeTjuAof8Wtx6Yw/viewform?usp=header" target="_blank" rel="noopener noreferrer">📝 Dopo la donazione: lascia il tuo nome</a>
+          <!-- NOTA: questo è un link di MODIFICA del Form. Appena puoi, sostituiscilo con "Invia → link" (pubblico). -->
+          <a class="btn" id="formBtn" href="https://docs.google.com/forms/d/1DodlxSwUUCDg9gkCi7fnONb0du1KMCh5N-BgO0e5pcY/edit" target="_blank" rel="noopener noreferrer">📝 Dopo la donazione: lascia il tuo nome</a>
         </div>
 
         <div class="promo">
@@ -83,6 +84,119 @@
 
         <div class="ticker"><span class="marquee" id="ticker">Grazie a tutt* per il supporto 💖</span></div>
 
-        <h3 style="margin:12px 0
+        <h3 style="margin:12px 0 6px">Ultimi sostenitori</h3>
+        <div class="feed" id="feed"></div>
+      </section>
+
+      <aside class="card">
+        <h3 style="margin:6px 0 8px">Come funziona</h3>
+        <p class="muted">Scegli PayPal o Revolut. Dopo la donazione, compila il form: il tuo nome apparirà nel feed. 💕</p>
+        <ul class="muted">
+          <li>PayPal: <code>paypal.me/iliyanadg</code></li>
+          <li>Revolut: <code>revolut.me/iliyan3gd8</code></li>
+        </ul>
+        <p class="muted">Se vuoi restare anonimo, scrivi “anonimo” nel form.</p>
+        <div class="pill" style="display:inline-block;margin-top:8px">IG: <b>@iliyanadg</b></div>
+      </aside>
+    </div>
+
+    <footer>© Iliyana — grazie per ogni aiuto! 🌸</footer>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    const CONFIG = {
+      target: 600,
+      paypal: 'https://paypal.me/iliyanadg',
+      revolut: 'https://revolut.me/iliyan3gd8',
+      supporters: [
+        { name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' }
+      ]
+    };
+
+    // CSV pubblico (pubblica sul web → Link → "Risposte del modulo 1" → CSV)
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3S4ETrSZv34R7AqhHaRzQDbfHOLq5ZRiA5hg-EriSQs1uEIHVDw_zdMjkfdS3wSnvbrN0r009VNrf/pub?gid=470744628&single=true&output=csv';
+
+    // === mappa colonne del tuo foglio: A Timestamp | B Nome | C Importo
+    const COLS = { name: 1, amount: 2, timestamp: 0 };
+
+    // ====== UTIL ======
+    function €(n){ return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n); }
+    const byTime = (a,b)=> new Date(b.time)-new Date(a.time);
+
+    function sanitizeAmount(v){
+      if (v == null) return 0;
+      v = String(v).replace(/[€\s]/g,'');          // togli € e spazi
+      if (v.includes(',') && !v.includes('.')) v = v.replace(',', '.'); // 10,50 -> 10.50
+      const n = Number(v);
+      return Number.isFinite(n) && n > 0 ? Math.round(n*100)/100 : 0;
+    }
+
+    function parseCSV(text){
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length <= 1) return [];
+      const rows = lines.slice(1).map(l =>
+        l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g,''))
+      );
+
+      return rows.map(r => ({
+        name: r[COLS.name] || 'Anonimo',
+        amount: sanitizeAmount(r[COLS.amount]),
+        note: '', // non hai la colonna messaggio
+        time: r[COLS.timestamp] ? new Date(r[COLS.timestamp]).toISOString() : new Date().toISOString()
+      })).filter(x => x.amount > 0);
+    }
+
+    async function loadDonors(){
+      try{
+        const res = await fetch(CSV_URL, { cache:'no-store' });
+        if(!res.ok) throw new Error('CSV non accessibile');
+        const txt = await res.text();
+        const fromSheet = parseCSV(txt);
+        return fromSheet.length ? fromSheet : CONFIG.supporters;
+      }catch(e){
+        console.warn('Uso fallback locale:', e);
+        return CONFIG.supporters;
+      }
+    }
+
+    (async function init(){
+      document.getElementById('paypalBtn').href = CONFIG.paypal;
+      document.getElementById('revolutBtn').href = CONFIG.revolut;
+
+      const supporters = (await loadDonors()).sort(byTime);
+      const sum = supporters.reduce((t,s)=> t + Number(s.amount||0), 0);
+      const pct = Math.min(100, Math.round((sum/CONFIG.target)*100));
+
+      document.getElementById('raisedLabel').textContent = €(sum);
+      document.getElementById('targetLabel').textContent = 'obiettivo ' + €(CONFIG.target);
+      document.getElementById('fill').style.width = pct + '%';
+      document.getElementById('count').textContent = supporters.length;
+      document.getElementById('left').textContent = €(Math.max(0, CONFIG.target - sum));
+
+      const last = supporters[0];
+      document.getElementById('last').textContent = last ? new Date(last.time).toLocaleString('it-IT') : '—';
+
+      const feedEl = document.getElementById('feed');
+      feedEl.innerHTML = '';
+      supporters.forEach(s=>{
+        const row = document.createElement('div');
+        row.className = 'donor';
+        row.innerHTML = `<div>👤 <b>${s.name||'Anonimo'}</b>
+                           <div class="time">${new Date(s.time).toLocaleString('it-IT')}</div>
+                         </div>
+                         <div class="muted">${''}</div>
+                         <div class="amt">+ ${€(s.amount||0)}</div>`;
+        feedEl.appendChild(row);
+      });
+
+      const ticker = document.getElementById('ticker');
+      const phrases = supporters.map(s=> `${s.name||'Anonimo'} +${€(s.amount||0)}`);
+      ticker.textContent = (phrases.join(' • ') + ' • ').repeat(2);
+    })();
+  </script>
+</body>
+</html>
+
 
 
