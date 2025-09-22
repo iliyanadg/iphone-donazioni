@@ -4,43 +4,59 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aiutami a sistemare l’iPhone 📱</title>
-  <meta name="description" content="Donazioni via PayPal o Revolut. Feed donatori automatico da Google Sheet (CSV) e promo: 2 mesi gratis per donazioni ≥ 10€." />
+  <meta name="description" content="Obiettivo raggiunto: 600€. Donazioni momentaneamente chiuse. Si riparte a breve.">
   <style>
-    :root{--bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;--acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa}
+    :root{
+      --bg:#0b0b10;--card:#12121a;--soft:#1c1c28;--txt:#f5f7fb;--muted:#b9bed1;
+      --acc:#ff4fd8;--acc2:#7abfff;--ok:#31d0aa;--warn:#ffd166
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 700px at 80% -10%,#1b1230 0%,#0b0b10 60%),var(--bg);color:var(--txt)}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         background:radial-gradient(1200px 700px at 80% -10%,#1b1230 0%,#0b0b10 60%),var(--bg);color:var(--txt)}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:980px;margin:0 auto;padding:28px}
     header{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin:12px 0 24px}
     .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--acc),#ffa6ed);display:grid;place-items:center;color:#170b1a;font-weight:900;box-shadow:0 10px 20px rgba(255,79,216,.25)}
+    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--acc),#ffa6ed);
+          display:grid;place-items:center;color:#170b1a;font-weight:900;box-shadow:0 10px 20px rgba(255,79,216,.25)}
     h1{font-size:clamp(20px,3vw,30px);margin:0}
     .sub{color:var(--muted);font-size:14px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00));
+          border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
     .grid{display:grid;gap:16px}
     @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
     .goal{display:flex;align-items:end;justify-content:space-between;margin:2px 0 12px}
     .goal strong{font-size:28px}
     .muted{color:var(--muted)}
     .bar{height:16px;border-radius:999px;background:var(--soft);position:relative;overflow:hidden}
-    .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--acc) 0%, var(--acc2) 100%);box-shadow:0 4px 20px rgba(122,191,255,.35)}
+    .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--acc) 0%, var(--acc2) 100%);
+          box-shadow:0 4px 20px rgba(122,191,255,.35)}
     .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
     .pill{background:var(--soft);border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:999px;font-size:14px}
     .btns{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
-    .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.00));font-weight:700;cursor:pointer}
+    .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;
+         border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.00));
+         font-weight:700;cursor:pointer}
     .btn:hover{transform:translateY(-1px);transition:transform .15s ease}
+    .btn.disabled{pointer-events:none;opacity:.55;filter:grayscale(1);cursor:not-allowed}
     .feed{max-height:420px;overflow:auto;padding-right:8px}
-    .donor{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;margin:6px 0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
+    .donor{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;margin:6px 0;
+           background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
     .amt{margin-left:auto;font-weight:800;color:var(--ok)}
     .time{font-size:12px;color:var(--muted)}
-    .ticker{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,rgba(255,255,255,.02),rgba(255,255,255,.00));padding:10px;margin:10px 0}
+    .ticker{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid rgba(255,255,255,.08);
+            background:linear-gradient(90deg,rgba(255,255,255,.02),rgba(255,255,255,.00));padding:10px;margin:10px 0}
     .marquee{display:inline-block;animation:scroll 22s linear infinite}
     @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     footer{margin:26px 0;color:var(--muted);font-size:13px;text-align:center}
-    .contact{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
+    .contact{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.08);
+             border-radius:12px;background:rgba(255,255,255,.02)}
     .contact a{font-weight:800;text-decoration:underline}
-    .promo{margin-top:12px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(122,191,255,.12),rgba(255,255,255,0));font-weight:700}
-    .promo small{display:block;color:var(--muted);font-weight:500;margin-top:4px}
+    .thanks{margin-top:12px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);
+            background:linear-gradient(180deg,rgba(49,208,170,.15),rgba(255,255,255,0));font-weight:700}
+    .thanks small{display:block;color:var(--muted);font-weight:500;margin-top:6px}
+    .confetti{position:fixed;left:0;top:-10px;font-size:22px;animation:fall 2.6s linear forwards;pointer-events:none}
+    @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.9}}
   </style>
 </head>
 <body>
@@ -66,19 +82,16 @@
         </div>
 
         <div class="btns">
-          <a class="btn" id="paypalBtn" href="https://paypal.me/iliyanadg" target="_blank" rel="noopener noreferrer">💸 Dona con PayPal</a>
-          <a class="btn" id="revolutBtn" href="https://revolut.me/iliyan3gd8" target="_blank" rel="noopener noreferrer">⚡️ Paga con Revolut</a>
-          <a class="btn" id="formBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSflaXPMs1gmBiewNUqfiSqwRyUy3OOWNRIKeTjuAof8Wtx6Yw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">📝 Dopo la donazione: lascia il tuo nome</a>
+          <a class="btn disabled" id="paypalBtn" href="javascript:void(0)" aria-disabled="true">💸 PayPal (chiuso)</a>
+          <a class="btn disabled" id="revolutBtn" href="javascript:void(0)" aria-disabled="true">⚡️ Revolut (chiuso)</a>
+          <a class="btn disabled" id="formBtn" href="javascript:void(0)" aria-disabled="true">📝 Form (chiuso)</a>
         </div>
 
-        <div class="promo">
-          🤍💙 <b>PROMO LANCIO:</b> chi dona <b>≥ 10€</b> riceverà <b>2 mesi gratuiti</b> quando lancio.
-          <small>Per riscattare: lascia IG nel form oppure scrivimi su <a href="https://instagram.com/iliyanadg" target="_blank" rel="noopener noreferrer">@iliyanadg</a>.</small>
-        </div>
-
-        <div class="contact">
-          📩 <span class="muted">Contatto diretto:</span> Instagram
-          <a href="https://instagram.com/iliyanadg" target="_blank" rel="noopener noreferrer">@iliyanadg</a>
+        <!-- Banner ringraziamento -->
+        <div class="thanks" id="thanksBanner">
+          🎉 Obiettivo raggiunto! Grazie di cuore a <b>Joey</b> per il sostegno decisivo 💖
+          <small>Le donazioni sono momentaneamente chiuse. Si ripartirà a breve: devo posticipare il countdown finché non avrò di nuovo il telefono. 
+          I 2 mesi gratis per chi ha donato ≥10€ restano confermati 🤍💙</small>
         </div>
 
         <div class="ticker"><span class="marquee" id="ticker">Grazie a tutt* per il supporto 💖</span></div>
@@ -89,13 +102,12 @@
 
       <aside class="card">
         <h3 style="margin:6px 0 8px">Come funziona</h3>
-        <p class="muted">Scegli PayPal o Revolut. Dopo la donazione, compila il form: il tuo nome apparirà nel feed. 💕</p>
+        <p class="muted">Obiettivo **raggiunto**: grazie a Joey e a chi ha tifato. Le donazioni sono in pausa; aggiornerò quando ripartiamo. 💕</p>
         <ul class="muted">
           <li>PayPal: <code>paypal.me/iliyanadg</code></li>
           <li>Revolut: <code>revolut.me/iliyan3gd8</code></li>
         </ul>
-        <p class="muted">Se vuoi restare anonimo, scrivi “anonimo” nel form.</p>
-        <div class="pill" style="display:inline-block;margin-top:8px">IG: <b>@iliyanadg</b></div>
+        <p class="muted">Per info o aggiornamenti scrivimi su Instagram: <b>@iliyanadg</b>.</p>
       </aside>
     </div>
 
@@ -103,29 +115,28 @@
   </div>
 
   <script>
-    // ====== CONFIG ======
+    // ====== CONFIG (riattiva donazioni mettendo GOAL_LOCK=false) ======
     const CONFIG = {
-      target: 600, // cambia qui il goal se vuoi
+      target: 600,
       paypal: 'https://paypal.me/iliyanadg',
       revolut: 'https://revolut.me/iliyan3gd8',
-      // fallback (se il CSV non è raggiungibile)
-      supporters: [{ name: 'Anonimo', amount: 20, note: 'Forza! 💪', time: '2025-09-20T21:10:00Z' }]
+      supporters: [{ name: 'Joey', amount: 600, note: '❤️', time: new Date().toISOString() }]
     };
 
-    // CSV pubblico (pubblica sul web → Link → "Risposte del modulo 1" → CSV)
-    const CSV_URL_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3S4ETrSZv34R7AqhHaRzQDbfHOLq5ZRiA5hg-EriSQs1uEIHVDw_zdMjkfdS3wSnvbrN0r009VNrf/pub?gid=470744628&single=true&output=csv';
+    // Blocca la pagina (ignora CSV e disabilita pulsanti). Riapri cambiando a false.
+    const GOAL_LOCK = true;
 
-    // Colonne del tuo foglio: A Timestamp | B Nome | C Importo
+    // (usato solo quando riaprirai)
+    const CSV_URL_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3S4ETrSZv34R7AqhHaRzQDbfHOLq5ZRiA5hg-EriSQs1uEIHVDw_zdMjkfdS3wSnvbrN0r009VNrf/pub?gid=470744628&single=true&output=csv';
     const COLS = { name: 1, amount: 2, timestamp: 0 };
 
-    // ====== UTIL ======
     function €(n){ return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n); }
     const byTime = (a,b)=> new Date(b.time)-new Date(a.time);
 
     function sanitizeAmount(v){
       if (v == null) return 0;
-      v = String(v).replace(/[€\s]/g,'');              // togli € e spazi
-      if (v.includes(',') && !v.includes('.')) v = v.replace(',', '.'); // 10,50 -> 10.50
+      v = String(v).replace(/[€\s]/g,'');
+      if (v.includes(',') && !v.includes('.')) v = v.replace(',', '.');
       const n = Number(v);
       return Number.isFinite(n) && n > 0 ? Math.round(n*100)/100 : 0;
     }
@@ -139,12 +150,11 @@
       return rows.map(r => ({
         name: r[COLS.name] || 'Anonimo',
         amount: sanitizeAmount(r[COLS.amount]),
-        note: '', // non usi (per ora) il campo messaggio
+        note: '',
         time: r[COLS.timestamp] ? new Date(r[COLS.timestamp]).toISOString() : new Date().toISOString()
       })).filter(x => x.amount > 0);
     }
 
-    // Carica CSV con anti-cache per aggiornarsi subito
     async function loadDonors(){
       try{
         const url = CSV_URL_BASE + '&_ts=' + Date.now();
@@ -160,26 +170,27 @@
     }
 
     (async function init(){
-      // fissa/propaga i link ai bottoni
-      document.getElementById('paypalBtn').href = CONFIG.paypal;
-      document.getElementById('revolutBtn').href = CONFIG.revolut;
+      // Scegli la fonte dei dati
+      const supporters = GOAL_LOCK ? CONFIG.supporters : (await loadDonors()).sort(byTime);
 
-      const supporters = (await loadDonors()).sort(byTime);
+      // calcoli
       const sum = supporters.reduce((t,s)=> t + Number(s.amount||0), 0);
       const pct = Math.min(100, Math.round((sum/CONFIG.target)*100));
 
+      // UI numeri
       document.getElementById('raisedLabel').textContent = €(sum);
-      document.getElementById('targetLabel').textContent = 'obiettivo ' + €(CONFIG.target);
+      document.getElementById('targetLabel').textContent = GOAL_LOCK ? 'obiettivo €600 — raggiunto!' : ('obiettivo ' + €(CONFIG.target));
       document.getElementById('fill').style.width = pct + '%';
       document.getElementById('count').textContent = supporters.length;
       document.getElementById('left').textContent = €(Math.max(0, CONFIG.target - sum));
 
-      const last = supporters[0];
+      const last = supporters.slice().sort(byTime)[0];
       document.getElementById('last').textContent = last ? new Date(last.time).toLocaleString('it-IT') : '—';
 
+      // feed
       const feedEl = document.getElementById('feed');
       feedEl.innerHTML = '';
-      supporters.forEach(s=>{
+      supporters.sort(byTime).forEach(s=>{
         const row = document.createElement('div');
         row.className = 'donor';
         row.innerHTML = `<div>👤 <b>${s.name||'Anonimo'}</b>
@@ -190,13 +201,45 @@
         feedEl.appendChild(row);
       });
 
+      // ticker
       const ticker = document.getElementById('ticker');
       const phrases = supporters.map(s=> `${s.name||'Anonimo'} +${€(s.amount||0)}`);
       ticker.textContent = (phrases.join(' • ') + ' • ').repeat(2);
+
+      // Se bloccato: disabilita pulsanti e confetti
+      if (GOAL_LOCK) {
+        ['paypalBtn','revolutBtn','formBtn'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){ el.classList.add('disabled'); el.setAttribute('tabindex','-1'); el.href = 'javascript:void(0)'; }
+        });
+
+        // confetti emoji ✨
+        const emojis = ['💖','✨','🎉','💙','🌸','💫'];
+        for (let i=0;i<16;i++){
+          const s = document.createElement('div');
+          s.className = 'confetti';
+          s.style.left = Math.random()*100 + 'vw';
+          s.style.animationDelay = (Math.random()*0.6)+'s';
+          s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+          document.body.appendChild(s);
+          setTimeout(()=> s.remove(), 3000);
+        }
+      } else {
+        // se riapri, rimetti i link attivi
+        document.getElementById('paypalBtn').href = CONFIG.paypal;
+        document.getElementById('revolutBtn').href = CONFIG.revolut;
+        const formBtn = document.getElementById('formBtn');
+        if(formBtn) formBtn.href = 'https://docs.google.com/forms/d/e/1FAIpQLSflaXPMs1gmBiewNUqfiSqwRyUy3OOWNRIKeTjuAof8Wtx6Yw/viewform?usp=dialog';
+        ['paypalBtn','revolutBtn','formBtn'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){ el.classList.remove('disabled'); el.removeAttribute('aria-disabled'); }
+        });
+      }
     })();
   </script>
 </body>
 </html>
+
 
 
 
